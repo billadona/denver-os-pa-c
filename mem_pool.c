@@ -1,4 +1,8 @@
 //
+// Created by bjgad on 3/7/2016.
+//
+
+//
 // Created by BillJoshua on 2/21/2016.
 //
 
@@ -267,7 +271,8 @@ alloc_status mem_pool_close(pool_pt pool) {
                 free(pt->gap_ix);
 
                 // find mgr in pool store and set to null
-                for(int i = 0; i < pool_store_size; ++i)
+                int i = 0;
+                for(i; i < pool_store_size; ++i)
                 {
                     if(pool_store[i] == pt)
                     {
@@ -302,7 +307,8 @@ alloc_pt mem_new_alloc(pool_pt pool, size_t size)
     // get mgr from pool by casting the pointer to (pool_mgr_pt)
     pool_mgr_pt pt = (pool_mgr_pt) pool;
     // check if any gaps, return null if none
-    for(int i = 0; i < (pt->pool.num_gaps); ++i)
+    int i = 0;
+    for(i; i < (pt->pool.num_gaps); ++i)
     {
         if(i == pt->pool.num_gaps)
         {
@@ -334,19 +340,19 @@ alloc_pt mem_new_alloc(pool_pt pool, size_t size)
     node_pt node = NULL;
     node_pt currNode = NULL;
     // if FIRST_FIT, then find the first sufficient node in the node heap
-    int i = 0;
+    int j = 0;
     if(pt->pool.policy == FIRST_FIT)
     {
         currNode = pt->node_heap;
-        while(pt->node_heap[i].used != 0 && pt->node_heap->allocated != 0)
+        while(pt->node_heap[j].used != 0 && pt->node_heap->allocated != 0)
         {
-            i++;
+            j++;
         }
         if(currNode == NULL)
         {
             return NULL;
         }
-        node = &(pt->node_heap[i]);
+        node = &(pt->node_heap[j]);
     }
 
         // if BEST_FIT, then find the first sufficient node in the gap index
@@ -354,9 +360,9 @@ alloc_pt mem_new_alloc(pool_pt pool, size_t size)
     {
         if(pt->pool.num_gaps != 0)
         {
-            while(i < pt->pool.num_gaps && pt->gap_ix[++i].size >= size)
+            while(j < pt->pool.num_gaps && pt->gap_ix[++j].size >= size)
             {
-                ++i;
+                ++j;
             }
         }
             // check if node found
@@ -364,7 +370,7 @@ alloc_pt mem_new_alloc(pool_pt pool, size_t size)
         {
             return NULL;
         }
-        node = pt->gap_ix[i].node;
+        node = pt->gap_ix[j].node;
     }
 
     // update metadata (num_allocs, alloc_size)
@@ -456,7 +462,8 @@ void mem_inspect_pool(pool_pt pool,
         return;
     }
     // loop through the node heap and the segments array
-    for(int i = 0; i<pt->used_nodes; i++)
+    int i = 0;
+    for(i; i<pt->used_nodes; i++)
     {
         if(pt->node_heap[i].used == 0);
             //    for each node, write the size and allocated in the segment
@@ -540,7 +547,8 @@ static alloc_status _mem_remove_from_gap_ix(pool_mgr_pt pool_mgr,
                                             node_pt node) {
     // find the position of the node in the gap index
     int i = 0;
-    for(int k = 0; k < pool_mgr->pool.num_gaps; k++)
+    int k = 0;
+    for(k; k < pool_mgr->pool.num_gaps; k++)
     {
         if(pool_mgr->gap_ix[k].node == node)
         {
